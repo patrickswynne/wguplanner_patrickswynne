@@ -67,7 +67,11 @@ namespace WGUPlanner.Views
         public async void LoadData()
         {
             List<Planner> courses = await App.PlannerRepository.GetAllPlannerAsync();
-            var distinctCourses = courses.Where(x => x.CourseTitle != null).Select(y => y).OrderBy(t => t.CourseStartDate).ToList();
+            var distinctCourses = courses
+                .Where(x => x.CourseTitle != null)
+                .GroupBy(p => p.CourseTitle)
+                .Select(g => g.First())
+                .ToList();
             CoursesListView.ItemsSource = distinctCourses;
         }
         async void OnCourseSelected(object sender, SelectedItemChangedEventArgs args)

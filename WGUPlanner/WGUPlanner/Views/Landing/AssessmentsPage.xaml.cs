@@ -68,7 +68,12 @@ namespace WGUPlanner.Views
         public async void LoadData()
         {
             List<Planner> assessments = await App.PlannerRepository.GetAllPlannerAsync();
-            var distinctAssessments = assessments.Where(x => x.AssessmentTitle != null).Select(y => y).Distinct().ToList();
+            var distinctAssessments = assessments
+                .Where(x => x.AssessmentId != null)
+                .GroupBy(p => p.AssessmentId)
+                .Select(g => g.First())
+                .ToList();
+
             AssessmentsListView.ItemsSource = distinctAssessments;
         }
 

@@ -70,7 +70,11 @@ namespace WGUPlanner.Views
         public async void LoadData()
         {
             List<Planner> terms = await App.PlannerRepository.GetAllPlannerAsync();
-            var distinctTerms = terms.Where(x => x.TermTitle != null).Select(y => y).Distinct().ToList();
+            var distinctTerms = terms
+                .Where(x => x.TermTitle != null)
+                .GroupBy(p => p.TermTitle)
+                .Select(g => g.First())
+                .ToList();
             TermsListView.ItemsSource = distinctTerms;
         }
         async void OnTermSelected(object sender, SelectedItemChangedEventArgs args)
